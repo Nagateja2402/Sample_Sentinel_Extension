@@ -50,10 +50,7 @@ var node_1 = require("vscode-languageclient/node");
 var client;
 function activate(context) {
     var _this = this;
-    // The server is implemented in node
     var serverModule = context.asAbsolutePath(path.join("server", "out", "server.js"));
-    // If the extension is launched in debug mode then the debug server options are used
-    // Otherwise the run options are used
     var serverOptions = {
         run: { module: serverModule, transport: node_1.TransportKind.ipc },
         debug: {
@@ -61,16 +58,12 @@ function activate(context) {
             transport: node_1.TransportKind.ipc,
         },
     };
-    // Options to control the language client
     var clientOptions = {
-        // Register the server for plain text documents
-        documentSelector: [{ scheme: "file", language: "sentinel" }],
+        documentSelector: [{ scheme: "folder", language: "sentinel" }],
         synchronize: {
-            // Notify the server about file changes to '.clientrc files contained in the workspace
             fileEvents: vscode_1.workspace.createFileSystemWatcher("**/.clientrc"),
         },
     };
-    // Create the language client and start the client.
     client = new node_1.LanguageClient("languageServerExample", "Language Server Example", serverOptions, clientOptions);
     vscode.window.showInformationMessage("Client Launched");
     //Init Command

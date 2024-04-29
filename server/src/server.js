@@ -154,21 +154,6 @@ connection.languages.diagnostics.on(function (params) { return __awaiter(void 0,
         }
     });
 }); });
-connection.onDidSaveTextDocument(function (event) {
-    var document = event.textDocument;
-    console.log(document);
-    // const lines = document.getText().split('\n');
-    // // Parse comments starting with "//"
-    // const comments = lines.filter(line => line.trim().startsWith('//'));
-    // // Print comments to the console
-    // comments.forEach(comment => {
-    //     console.log(comment);
-    // });
-    // console.log(event);
-    // console.log('saved');
-});
-// The content of a text document has changed. This event is emitted
-// when the text document first opened or when its content has changed.
 documents.onDidChangeContent(function (change) {
     validateTextDocument(change.document);
 });
