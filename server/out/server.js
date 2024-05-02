@@ -45,17 +45,6 @@ connection.onInitialize((params) => {
     }
     return result;
 });
-connection.onInitialized(() => {
-    if (hasConfigurationCapability) {
-        // Register for all configuration changes.
-        connection.client.register(node_1.DidChangeConfigurationNotification.type, undefined);
-    }
-    if (hasWorkspaceFolderCapability) {
-        connection.workspace.onDidChangeWorkspaceFolders(_event => {
-            connection.console.log('Workspace folder change event received.');
-        });
-    }
-});
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
@@ -94,40 +83,24 @@ function getDocumentSettings(resource) {
 documents.onDidClose(e => {
     documentSettings.delete(e.document.uri);
 });
-connection.languages.diagnostics.on(async (params) => {
-    const document = documents.get(params.textDocument.uri);
-    if (document !== undefined) {
-        return {
-            kind: node_1.DocumentDiagnosticReportKind.Full,
-            items: await validateTextDocument(document)
-        };
-    }
-    else {
-        // We don't know the document. We can either try to read it from disk
-        // or we don't report problems for it.
-        return {
-            kind: node_1.DocumentDiagnosticReportKind.Full,
-            items: []
-        };
-    }
-});
-connection.onDidSaveTextDocument((event) => {
-    const document = event.textDocument;
-    console.log(document);
-    // const lines = document.getText().split('\n');
-    // // Parse comments starting with "//"
-    // const comments = lines.filter(line => line.trim().startsWith('//'));
-    // // Print comments to the console
-    // comments.forEach(comment => {
-    //     console.log(comment);
-    // });
-    // console.log(event);
-    // console.log('saved');
-});
-// The content of a text document has changed. This event is emitted
-// when the text document first opened or when its content has changed.
+// connection.languages.diagnostics.on(async (params) => {
+// 	const document = documents.get(params.textDocument.uri);
+// 	if (document !== undefined) {
+// 		return {
+// 			kind: DocumentDiagnosticReportKind.Full,
+// 			items: await validateTextDocument(document)
+// 		} satisfies DocumentDiagnosticReport;
+// 	} else {
+// 		// We don't know the document. We can either try to read it from disk
+// 		// or we don't report problems for it.
+// 		return {
+// 			kind: DocumentDiagnosticReportKind.Full,
+// 			items: []
+// 		} satisfies DocumentDiagnosticReport;
+// 	}
+// });
 documents.onDidChangeContent((change) => {
-    validateTextDocument(change.document);
+    //validateTextDocument(change.document);
 });
 async function validateTextDocument(textDocument) {
     // In this simple example we get the settings for every validate run.

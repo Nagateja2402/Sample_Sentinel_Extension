@@ -38,16 +38,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFilesInRepository = void 0;
 var axios_1 = require("axios");
-function getFilesInRepository(filetosearch) {
+function getFilesInRepository(owner, repo, branch, filetosearch) {
     var _a;
     return __awaiter(this, void 0, void 0, function () {
-        var owner, repo, branch, apiUrl, response, contents, files, apitoretrive, response_1, content, error_1;
+        var apiUrl, response, contents, files, apitoretrive, response_1, content, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    owner = 'hashicorp';
-                    repo = 'vscode-terraform';
-                    branch = 'main';
                     apiUrl = "https://api.github.com/repos/".concat(owner, "/").concat(repo, "/contents?ref=").concat(branch);
                     _b.label = 1;
                 case 1:
@@ -58,7 +55,7 @@ function getFilesInRepository(filetosearch) {
                     contents = response.data;
                     files = contents.map(function (item) { return item.name; });
                     if (!files.includes(filetosearch)) return [3 /*break*/, 4];
-                    apitoretrive = "https://api.github.com/repos/".concat(owner, "/").concat(repo, "/contents/").concat(filetosearch);
+                    apitoretrive = "https://api.github.com/repos/".concat(owner, "/").concat(repo, "/contents/").concat(filetosearch, "?ref=").concat(branch);
                     return [4 /*yield*/, axios_1.default.get(apitoretrive)];
                 case 3:
                     response_1 = _b.sent();

@@ -101,5 +101,8 @@
   },
   "permissions": [
     "workspace.fs.writeFile"
+  ],
+  "activationEvents": [
+    "onLanguage:sentinel"
   ]
 }

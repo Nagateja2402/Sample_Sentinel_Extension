@@ -6,8 +6,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
 const path = require("path");
-const fs = require("fs");
 const searchrepo = require("./getGithubcontent");
+const vscode_extension_api_1 = require("./vscode_extension_api");
 const vscode_1 = require("vscode");
 const vscode = require("vscode");
 const node_1 = require("vscode-languageclient/node");
@@ -22,7 +22,7 @@ function activate(context) {
         },
     };
     const clientOptions = {
-        documentSelector: [{ scheme: "file", language: "sentinel" }],
+        documentSelector: [{ scheme: "folder", language: "sentinel" }],
         synchronize: {
             fileEvents: vscode_1.workspace.createFileSystemWatcher("**/.clientrc"),
         },
@@ -31,37 +31,7 @@ function activate(context) {
     vscode.window.showInformationMessage("Client Launched");
     //Init Command
     const init = vscode.commands.registerCommand("sample-sentinel-extension.init", () => {
-        vscode.window
-            .showInputBox({
-            prompt: "Enter the name of the directory",
-            placeHolder: "Directory Name",
-        })
-            .then((dirname) => {
-            const workspaceFolders = vscode.workspace.workspaceFolders;
-            if (workspaceFolders && workspaceFolders.length > 0) {
-                const pwdPath = workspaceFolders[0].uri.fsPath;
-                const dirPath = path.join(pwdPath, dirname);
-                vscode.window.showInformationMessage(dirPath);
-                if (!fs.existsSync(dirPath)) {
-                    fs.mkdirSync(dirPath);
-                    vscode.window.showInformationMessage("Directory Created");
-                    console.log("Directory Created");
-                }
-                else {
-                    console.log("Directory Already Exists");
-                    vscode.window.showErrorMessage(" Directory Already Exists");
-                }
-                const filePath = path.join(dirPath, "/new.sentinel");
-                if (!fs.existsSync(filePath)) {
-                    fs.open(filePath, "w", () => { });
-                    vscode.window.showInformationMessage("File Created");
-                    console.log("File Created");
-                }
-            }
-            else {
-                vscode.window.showErrorMessage("No working Directory");
-            }
-        });
+        (0, vscode_extension_api_1.create_directory_using_vscodeapi)();
     });
     let datafromapi = vscode.commands.registerTextEditorCommand("extension.printLastCommentLine", async (editor) => {
         vscode.commands.executeCommand("editor.action.insertLineAfter");
@@ -69,13 +39,14 @@ function activate(context) {
         const cursorPosition = editor.selection.active;
         const lines = document.getText().split("\n");
         const lastLineOfComment = getLastLineOfComment(lines, cursorPosition);
-        const values = lastLineOfComment.split(':');
+        const values = lastLineOfComment.split(":");
         const filepath = vscode.workspace.asRelativePath(vscode.window.activeTextEditor.document.uri);
         const pwdPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-        const totalpath = path.join(pwdPath, values[1]);
+        const totalpath = path.join(pwdPath, values[4]);
         console.log(totalpath);
         vscode.window.showInformationMessage(lastLineOfComment);
-        const filecontent = searchrepo.getFilesInRepository(values[0]);
+        console.log(values);
+        const filecontent = searchrepo.getFilesInRepository(values[0], values[1], values[2], values[3]);
         vscode.workspace.fs.writeFile(vscode.Uri.file(totalpath), Buffer.from(await filecontent));
     });
     function getLastLineOfComment(lines, cursorPosition) {

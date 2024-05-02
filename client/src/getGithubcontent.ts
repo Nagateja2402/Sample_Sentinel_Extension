@@ -1,10 +1,7 @@
 import axios from 'axios';
 import { promises } from 'dns';
 import * as vscode from 'vscode';
-export async function getFilesInRepository(filetosearch: string): Promise<string> {
-	const owner = 'hashicorp';
-	const repo = 'vscode-terraform';
-	const branch = 'main';
+export async function getFilesInRepository(owner: string, repo: string, branch: string, filetosearch: string): Promise<string> {
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents?ref=${branch}`;
     try {
 		const response = await axios.get(apiUrl);
@@ -12,7 +9,7 @@ export async function getFilesInRepository(filetosearch: string): Promise<string
         const files = contents.map(item => item.name);
 		if(files.includes(filetosearch))
 			{
-				const apitoretrive = `https://api.github.com/repos/${owner}/${repo}/contents/${filetosearch}`;
+				const apitoretrive = `https://api.github.com/repos/${owner}/${repo}/contents/${filetosearch}?ref=${branch}`;
 				const response = await axios.get(apitoretrive);
         		const content = Buffer.from(response.data.content, 'base64').toString('utf-8');
         		return content;

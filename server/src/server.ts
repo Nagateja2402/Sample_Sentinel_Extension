@@ -75,17 +75,17 @@ connection.onInitialize((params: InitializeParams) => {
 	return result;
 });
 
-connection.onInitialized(() => {
-	if (hasConfigurationCapability) {
-		// Register for all configuration changes.
-		connection.client.register(DidChangeConfigurationNotification.type, undefined);
-	}
-	if (hasWorkspaceFolderCapability) {
-		connection.workspace.onDidChangeWorkspaceFolders(_event => {
-			connection.console.log('Workspace folder change event received.');
-		});
-	}
-});
+// connection.onInitialized(() => {
+// 	if (hasConfigurationCapability) {
+// 		// Register for all configuration changes.
+// 		connection.client.register(DidChangeConfigurationNotification.type, undefined);
+// 	}
+// 	if (hasWorkspaceFolderCapability) {
+// 		connection.workspace.onDidChangeWorkspaceFolders(_event => {
+// 			connection.console.log('Workspace folder change event received.');
+// 		});
+// 	}
+// });
 
 // The example settings
 interface ExampleSettings {
@@ -137,26 +137,26 @@ documents.onDidClose(e => {
 });
 
 
-connection.languages.diagnostics.on(async (params) => {
-	const document = documents.get(params.textDocument.uri);
-	if (document !== undefined) {
-		return {
-			kind: DocumentDiagnosticReportKind.Full,
-			items: await validateTextDocument(document)
-		} satisfies DocumentDiagnosticReport;
-	} else {
-		// We don't know the document. We can either try to read it from disk
-		// or we don't report problems for it.
-		return {
-			kind: DocumentDiagnosticReportKind.Full,
-			items: []
-		} satisfies DocumentDiagnosticReport;
-	}
-});
+// connection.languages.diagnostics.on(async (params) => {
+// 	const document = documents.get(params.textDocument.uri);
+// 	if (document !== undefined) {
+// 		return {
+// 			kind: DocumentDiagnosticReportKind.Full,
+// 			items: await validateTextDocument(document)
+// 		} satisfies DocumentDiagnosticReport;
+// 	} else {
+// 		// We don't know the document. We can either try to read it from disk
+// 		// or we don't report problems for it.
+// 		return {
+// 			kind: DocumentDiagnosticReportKind.Full,
+// 			items: []
+// 		} satisfies DocumentDiagnosticReport;
+// 	}
+// });
 
 
 documents.onDidChangeContent((change: TextDocumentChangeEvent<TextDocument>) => {
-	validateTextDocument(change.document);
+	//validateTextDocument(change.document);
 });
 
 async function validateTextDocument(textDocument: TextDocument): Promise<Diagnostic[]> {

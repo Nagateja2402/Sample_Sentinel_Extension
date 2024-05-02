@@ -81,17 +81,6 @@ connection.onInitialize(function (params) {
     }
     return result;
 });
-connection.onInitialized(function () {
-    if (hasConfigurationCapability) {
-        // Register for all configuration changes.
-        connection.client.register(node_1.DidChangeConfigurationNotification.type, undefined);
-    }
-    if (hasWorkspaceFolderCapability) {
-        connection.workspace.onDidChangeWorkspaceFolders(function (_event) {
-            connection.console.log('Workspace folder change event received.');
-        });
-    }
-});
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
@@ -130,32 +119,24 @@ function getDocumentSettings(resource) {
 documents.onDidClose(function (e) {
     documentSettings.delete(e.document.uri);
 });
-connection.languages.diagnostics.on(function (params) { return __awaiter(void 0, void 0, void 0, function () {
-    var document;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                document = documents.get(params.textDocument.uri);
-                if (!(document !== undefined)) return [3 /*break*/, 2];
-                _a = {
-                    kind: node_1.DocumentDiagnosticReportKind.Full
-                };
-                return [4 /*yield*/, validateTextDocument(document)];
-            case 1: return [2 /*return*/, (_a.items = _b.sent(),
-                    _a)];
-            case 2: 
-            // We don't know the document. We can either try to read it from disk
-            // or we don't report problems for it.
-            return [2 /*return*/, {
-                    kind: node_1.DocumentDiagnosticReportKind.Full,
-                    items: []
-                }];
-        }
-    });
-}); });
+// connection.languages.diagnostics.on(async (params) => {
+// 	const document = documents.get(params.textDocument.uri);
+// 	if (document !== undefined) {
+// 		return {
+// 			kind: DocumentDiagnosticReportKind.Full,
+// 			items: await validateTextDocument(document)
+// 		} satisfies DocumentDiagnosticReport;
+// 	} else {
+// 		// We don't know the document. We can either try to read it from disk
+// 		// or we don't report problems for it.
+// 		return {
+// 			kind: DocumentDiagnosticReportKind.Full,
+// 			items: []
+// 		} satisfies DocumentDiagnosticReport;
+// 	}
+// });
 documents.onDidChangeContent(function (change) {
-    validateTextDocument(change.document);
+    //validateTextDocument(change.document);
 });
 function validateTextDocument(textDocument) {
     return __awaiter(this, void 0, void 0, function () {
